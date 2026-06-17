@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welk traject past bij jou? – TKO CVO Lethas Brussel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paars:#93358C;
+    --paars-donker:#6E2769;
+    --paars-zacht:#F6EDF5;
+    --groen:#A9CB2F;
+    --groen-donker:#7E9A1C;
+    --groen-zacht:#F3F7E3;
+    --inkt:#27313D;
+    --grijs:#5A6878;
+    --lijn:#E5E2E8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Inter',Arial,sans-serif;color:var(--inkt);
+    line-height:1.6;font-size:1.02rem;min-height:100vh;
+    display:flex;flex-direction:column;
+    background:
+      radial-gradient(700px 380px at 95% -5%, rgba(169,203,47,.16), transparent 70%),
+      radial-gradient(640px 400px at -5% 105%, rgba(147,53,140,.12), transparent 70%),
+      #FAF9F7;
+  }
+  h1,h2,h3{font-family:'Bricolage Grotesque','Inter',sans-serif;line-height:1.18;}
+  a{color:var(--paars);}
+
+  header{
+    display:flex;align-items:center;gap:16px;
+    padding:14px 22px;border-bottom:1px solid var(--lijn);
+    background:rgba(255,255,255,.8);
+  }
+  header img{height:48px;}
+  header .titel{font-family:'Bricolage Grotesque';font-weight:700;font-size:1rem;}
+  header .sub{font-size:.8rem;color:var(--grijs);}
+
+  main{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    padding:34px 18px;
+  }
+  .kader{width:min(720px,100%);}
+
+  .kop{text-align:center;margin-bottom:26px;}
+  .kop .eyebrow{
+    display:inline-block;font-weight:700;font-size:.74rem;
+    letter-spacing:.15em;text-transform:uppercase;color:var(--paars);margin-bottom:8px;
+  }
+  .kop h1{font-size:clamp(1.6rem,4.6vw,2.3rem);font-weight:800;}
+  .kop p{color:var(--grijs);max-width:540px;margin:10px auto 0;}
+
+  /* voortgang */
+  .voortgang{display:flex;gap:8px;justify-content:center;margin-bottom:22px;}
+  .bolletje{
+    width:38px;height:6px;border-radius:999px;background:var(--lijn);
+    transition:background .25s,width .25s,opacity .25s;
+  }
+  .bolletje.actief{background:var(--paars);}
+  .bolletje.klaar{background:var(--groen);}
+  .bolletje.verborgen{width:0;opacity:0;}
+
+  .paneel{
+    background:#fff;border:1px solid var(--lijn);border-radius:20px;
+    padding:32px 30px;box-shadow:0 16px 44px rgba(39,49,61,.10);
+  }
+  @media(max-width:520px){.paneel{padding:24px 18px;}}
+
+  .stap{display:none;}
+  .stap.actief{display:block;animation:opkomen .3s ease;}
+  @keyframes opkomen{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion:reduce){.stap.actief{animation:none;}}
+
+  .teller{
+    font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--groen-donker);margin-bottom:6px;
+  }
+  .stap h2{font-size:1.35rem;margin-bottom:18px;}
+
+  .opties{display:grid;gap:12px;}
+  .optie{
+    text-align:left;background:#FAF9F7;border:2px solid var(--lijn);
+    border-radius:14px;padding:17px 18px;cursor:pointer;font:inherit;color:inherit;
+    transition:border-color .15s,background .15s,transform .12s;
+  }
+  .optie:hover{border-color:var(--paars);background:var(--paars-zacht);transform:translateY(-1px);}
+  .optie:focus-visible{outline:3px solid var(--groen);outline-offset:2px;}
+  .optie b{display:block;font-family:'Bricolage Grotesque';font-size:1.02rem;margin-bottom:2px;}
+  .optie span{color:var(--grijs);font-size:.93rem;}
+
+  .terug{
+    background:none;border:none;color:var(--grijs);font:inherit;font-size:.9rem;
+    cursor:pointer;margin-top:18px;text-decoration:underline;padding:4px;
+  }
+  .terug:focus-visible{outline:3px solid var(--groen);outline-offset:2px;border-radius:4px;}
+
+  /* resultaat */
+  .resultaat-kop{border-radius:14px;padding:20px 22px;color:#fff;margin-bottom:20px;}
+  .resultaat-kop.paars{background:linear-gradient(135deg,var(--paars),var(--paars-donker));}
+  .resultaat-kop.groen{background:linear-gradient(135deg,#5F7A12,var(--groen-donker));}
+  .resultaat-kop .optienr{
+    font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.9;
+  }
+  .resultaat-kop h2{font-size:1.45rem;margin:4px 0 6px;}
+  .resultaat-kop .duur{
+    display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);
+    border-radius:999px;padding:4px 14px;font-size:.88rem;font-weight:600;
+  }
+  .resultaat p{margin-bottom:12px;}
+  .resultaat ul{margin:0 0 14px 20px;}
+  .resultaat li{margin-bottom:5px;}
+  .notitie{
+    background:var(--groen-zacht);border-left:4px solid var(--groen);
+    border-radius:0 10px 10px 0;padding:12px 16px;font-size:.94rem;margin:14px 0;
+  }
+  .knoppen{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;}
+  @media(max-width:560px){.knoppen{grid-template-columns:1fr;}}
+  .knop{
+    display:block;text-align:center;text-decoration:none;
+    font-family:'Bricolage Grotesque';font-weight:700;
+    padding:13px 20px;border-radius:10px;font-size:.96rem;
+    border:2px solid transparent;cursor:pointer;
+  }
+  .knop.primair{background:var(--paars);color:#fff;}
+  .knop.primair:hover{background:var(--paars-donker);}
+  .knop.accent{background:var(--groen);color:var(--inkt);}
+  .knop.accent:hover{background:var(--groen-donker);color:#fff;}
+  .knop.tweede{background:#fff;color:var(--inkt);border-color:var(--lijn);}
+  .knop.tweede:hover{border-color:var(--paars);color:var(--paars);}
+  .knop:focus-visible{outline:3px solid var(--groen);outline-offset:2px;}
+
+  footer{
+    text-align:center;font-size:.84rem;color:var(--grijs);
+    padding:16px 22px 22px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="data:image/png;base64,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" alt="CVO Lethas Brussel">
+  <div>
+    <div class="titel">Tweedekansonderwijs</div>
+    <div class="sub">Behaal je diploma secundair onderwijs</div>
+  </div>
+</header>
+
+<main>
+  <div class="kader">
+    <div class="kop">
+      <span class="eyebrow">Trajectwijzer</span>
+      <h1>Welk traject past het beste bij jou?</h1>
+      <p>Beantwoord enkele korte vragen en ontdek welk traject het beste aansluit bij jouw situatie.</p>
+    </div>
+
+    <div class="voortgang" aria-hidden="true">
+      <div class="bolletje" data-b="1"></div>
+      <div class="bolletje" data-b="2"></div>
+      <div class="bolletje" data-b="3"></div>
+      <div class="bolletje" data-b="4"></div>
+    </div>
+
+    <div class="paneel">
+
+      <div class="stap actief" data-stap="1">
+        <div class="teller">Vraag 1</div>
+        <h2>Wat wil je vooral bereiken?</h2>
+        <div class="opties">
+          <button class="optie" data-volgende="2" data-score="beroep">
+            <b>Een beroep leren én mijn diploma behalen</b>
+            <span>Ik wil praktijkgericht leren en ervaring opdoen op de werkvloer.</span>
+          </button>
+          <button class="optie" data-volgende="2" data-score="humane">
+            <b>Mijn diploma behalen via algemene vorming</b>
+            <span>Ik denk aan verder studeren en wil een breed, algemeen pakket.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="stap" data-stap="2">
+        <div class="teller">Vraag 2</div>
+        <h2>Hoe zit het met je kennis van Frans en Engels?</h2>
+        <div class="opties">
+          <button class="optie" data-volgende="3" data-score="humane">
+            <b>Ik ken voldoende Frans en Engels</b>
+            <span>Voor humane wetenschappen is kennis van Frans en Engels noodzakelijk.</span>
+          </button>
+          <button class="optie" data-volgende="3" data-score="beroep">
+            <b>Mijn Frans of Engels is eerder beperkt</b>
+            <span>In het traject met AAV volg je Frans of Engels als module.</span>
+          </button>
+        </div>
+        <button class="terug" data-terug="1">Vorige vraag</button>
+      </div>
+
+      <div class="stap" data-stap="3">
+        <div class="teller">Vraag 3</div>
+        <h2>Hoe leer je het liefst?</h2>
+        <div class="opties">
+          <button class="optie" data-volgende="auto" data-score="beroep">
+            <b>Vooral tijdens de les, met minder thuiswerk</b>
+            <span>Opdrachten, groepswerk, projecten en presentaties in de klas.</span>
+          </button>
+          <button class="optie" data-volgende="auto" data-score="humane">
+            <b>Zelfstandig, ook met studeren thuis</b>
+            <span>Testen en opdrachten, met een grotere mate van zelfstandigheid.</span>
+          </button>
+        </div>
+        <button class="terug" data-terug="2">Vorige vraag</button>
+      </div>
+
+      <div class="stap" data-stap="4">
+        <div class="teller">Vraag 4</div>
+        <h2>Welke werkomgeving spreekt jou het meest aan?</h2>
+        <div class="opties">
+          <button class="optie" data-volgende="r" data-richting="maa">
+            <b>Een ziekenhuis, dokters- of tandartspraktijk</b>
+            <span>Onthaal van pati&euml;nten, afspraken vastleggen, dossierbeheer en medische correspondentie.</span>
+          </button>
+          <button class="optie" data-volgende="r" data-richting="ict">
+            <b>Een kantoor, als administratief medewerker</b>
+            <span>Teksten en cijfergegevens verwerken, databasebeheer, telefoneren en mailen.</span>
+          </button>
+          <button class="optie" data-volgende="r" data-richting="cas">
+            <b>De verkoop, in contact met klanten</b>
+            <span>Verkoopstechnieken en onderhandelen, verkoopsadministratie, marketing en publiciteit.</span>
+          </button>
+        </div>
+        <button class="terug" data-terug="3">Vorige vraag</button>
+      </div>
+
+      <div class="stap resultaat" data-stap="r">
+        <div id="resultaat"></div>
+        <div class="knoppen">
+          <a class="knop primair" href="mailto:tko@cvolethas.be">Stel ons je vragen</a>
+          <a class="knop accent" id="knop-toekomst" href="#" target="_blank" rel="noopener">Richting je toekomst</a>
+          <a class="knop tweede" href="https://www.cvolethas.be/infosessies" target="_blank" rel="noopener">Inschrijven infosessie</a>
+          <button class="knop tweede" id="opnieuw">Opnieuw beginnen</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  CVO Lethas Brussel · Rouppeplein 16, 1000 Brussel
+</footer>
+
+<script>
+const scores = [];
+let richting = null;
+const stappen = document.querySelectorAll(".stap");
+const bolletjes = document.querySelectorAll(".bolletje");
+
+const links = {
+  humane: "https://www.cvolethas.be/opleidingen/vakgebied/45/humane-wetenschappen?inschrijven=0",
+  ict: "https://www.cvolethas.be/cursus/ia-ict-administratie",
+  maa: "https://www.cvolethas.be/cursus/maa-medisch-administratief-assistent",
+  cas: "https://www.cvolethas.be/cursus/cas-commercieel-assistent"
+};
+
+const richtingNamen = {
+  maa: "Medisch administratief assistent",
+  ict: "ICT & Administratie",
+  cas: "Commercieel assistent"
+};
+const richtingRollen = {
+  maa: "Opleiding tot assistent bij een ziekenhuis, dokters- of tandartspraktijk: onthaal van pati&euml;nten, afspraken vastleggen, dossierbeheer, medische correspondentie, ondersteunen van zorgverstrekkers en EHBO.",
+  ict: "Opleiding tot administratief medewerker: bestanden aanmaken en organiseren, teksten en cijfergegevens verwerken, presenteren, databasebeheer, onthaal van klanten en/of medewerkers, telefoneren en mailen.",
+  cas: "Opleiding tot assistent verkoop: klantgericht en professioneel handelen, verkoopstechnieken en onderhandelen, verkoopsadministratie, marktanalyses, marketing en publiciteit."
+};
+
+function isBeroep(){
+  const b = scores.filter(s=>s==="beroep").length;
+  return b >= scores.length - b;
+}
+
+function toonStap(n){
+  stappen.forEach(s=>s.classList.toggle("actief", s.dataset.stap===String(n)));
+  const humanePad = (n==="r" && richting === null);
+  bolletjes.forEach(b=>{
+    const nr = Number(b.dataset.b);
+    const huidig = (n==="r") ? 5 : Number(n);
+    b.classList.toggle("verborgen", nr===4 && humanePad);
+    b.classList.toggle("klaar", nr < huidig);
+    b.classList.toggle("actief", nr === huidig);
+  });
+  if(n==="r") toonResultaat();
+}
+
+document.querySelectorAll(".optie").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    if(b.dataset.score) scores.push(b.dataset.score);
+    if(b.dataset.richting) richting = b.dataset.richting;
+    let volgende = b.dataset.volgende;
+    if(volgende === "auto"){
+      volgende = isBeroep() ? "4" : "r";
+    }
+    toonStap(volgende);
+  });
+});
+document.querySelectorAll(".terug").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    if(b.closest(".stap").dataset.stap === "4"){ richting = null; }
+    else { scores.pop(); }
+    toonStap(b.dataset.terug);
+  });
+});
+document.getElementById("opnieuw").addEventListener("click", ()=>{
+  scores.length = 0;
+  richting = null;
+  toonStap("1");
+});
+
+function toonResultaat(){
+  const r = document.getElementById("resultaat");
+  const knopToekomst = document.getElementById("knop-toekomst");
+  if(isBeroep()){
+    const naam = richtingNamen[richting];
+    const rol = richtingRollen[richting];
+    knopToekomst.href = links[richting];
+    r.innerHTML = `
+      <div class="resultaat-kop paars">
+        <div class="optienr">Jouw richtingaanwijzer · Optie 1</div>
+        <h2>${naam} + algemene vakken (AAV)</h2>
+        <span class="duur">Diploma na 1 jaar</span>
+      </div>
+      <p>${rol}</p>
+      <p>Je combineert deze beroepsopleiding met de algemene vakken (AAV). Les in de klas wordt gecombineerd met ervaring opdoen op de werkvloer.</p>
+      <p>Evaluatie gebeurt permanent: opdrachten tijdens de les, groepswerk, projecten en presentaties, soms testen — en minder thuiswerk. Geen examens, dus aanwezigheid is heel belangrijk.</p>
+      <div class="notitie">Dit is een eerste richtingaanwijzer, geen definitieve keuze. Tijdens het intakegesprek bekijken we samen jouw persoonlijk traject, je noden en je motivatie. <strong>Kom zeker naar onze infosessies.</strong></div>`;
+  } else {
+    knopToekomst.href = links.humane;
+    r.innerHTML = `
+      <div class="resultaat-kop groen">
+        <div class="optienr">Jouw richtingaanwijzer · Optie 2</div>
+        <h2>Algemene vorming: humane wetenschappen</h2>
+        <span class="duur">Diploma na 1,5 jaar</span>
+      </div>
+      <p>Een breed, algemeen traject binnen de doorstroomfinaliteit, met opfrismodules (wiskunde &amp; wetenschappen) en vier kernmodules: communicatie &amp; expressie, identiteit &amp; normering, organisatie &amp; samenhang en onderzoekscompetentie.</p>
+      <p>Hou er rekening mee dat kennis van <strong>Frans en Engels noodzakelijk</strong> is, dat thuis studeren nodig is en dat een grotere mate van zelfstandigheid vereist is.</p>
+      <div class="notitie">Dit is een eerste richtingaanwijzer, geen definitieve keuze. Tijdens het intakegesprek bekijken we samen jouw persoonlijk traject, je noden en je motivatie. <strong>Kom zeker naar onze infosessies.</strong></div>`;
+  }
+}
+</script>
+</body>
+</html>
