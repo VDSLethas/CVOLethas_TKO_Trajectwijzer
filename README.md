@@ -1,2 +1,2 @@
-# Boekje_TKO_Leerkracht
-FAQ met als inhoud het boekje voor TKO leerkrachten bij CVO Lethas.
+# CVO Lethas TKO Trajectwijzer
+Helpt je met het kiezen van je studierichting!
